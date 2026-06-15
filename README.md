@@ -6,6 +6,7 @@
 > Any code snippets included are examples only and do not represent any protected production codebase.
 
 ---
+
 # SprintLine – E2E Automation Framework
 
 Framework de automatización E2E para SprintLine | Cypress | JavaScript
