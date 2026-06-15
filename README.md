@@ -1,5 +1,5 @@
 > ### Confidentiality Notice
-> This repository contains an anonymized portfolio case study based on a real-world project.
+> This repository contains an anonymized portfolio case study based on a real-world project. 
 > 
 > Company names, client information, URLs, credentials, proprietary business logic, and sensitive implementation details have been removed or modified to protect confidentiality.
 > 
