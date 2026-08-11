@@ -28,7 +28,7 @@ SprintLine permite a founders, Product Managers y equipos técnicos generar Prod
 
 La solución fue integrada al proceso de Build Validation Testing (BVT) para validar funcionalidades críticas antes del deployment y reducir significativamente el esfuerzo de validación manual.
 
-La estrategia actual prioriza los flujos funcionales de mayor valor y mantiene explícitamente fuera del alcance aquellos escenarios que requieren dependencias externas, transacciones reales o una cobertura exhaustiva de combinaciones comerciales.
+La estrategia actual prioriza los flujos funcionales de mayor valor y mantiene una cobertura estable y repetible dentro del framework.
 
 ---
 
@@ -90,14 +90,12 @@ La estrategia actual prioriza los flujos funcionales de mayor valor y mantiene e
 
 La estrategia de automatización prioriza los flujos críticos y representativos del funcionamiento principal de SprintLine.
 
-| Flujo funcional                                     | Automatización  | Alcance                                              |
-| --------------------------------------------------- | --------------- | ---------------------------------------------------- |
-| **Login**                                           | Automatizado    | Flujo funcional y validaciones negativas             |
-| **Signup**                                          | Automatizado    | Flujo funcional y validaciones negativas             |
-| **Questionnaire**                                   | Automatizado    | Flujo principal                                      |
-| **Product Definition**                              | Automatizado    | Validación de generación y entrega del documento RFP |
-| **Sistema de pagos**                                | No automatizado | Fuera del alcance de la suite                        |
-| **Generación de contenido para todos los paquetes** | No automatizado | Fuera del alcance de la suite                        |
+| Flujo funcional        | Automatización | Alcance                                              |
+| ---------------------- | -------------- | ---------------------------------------------------- |
+| **Login**              | Automatizado   | Flujo funcional y validaciones negativas             |
+| **Signup**             | Automatizado   | Flujo funcional y validaciones negativas             |
+| **Questionnaire**      | Automatizado   | Flujo principal                                      |
+| **Product Definition** | Automatizado   | Validación de generación y entrega del documento RFP |
 
 ### Flujos automatizados
 
@@ -110,27 +108,9 @@ Se automatizaron los flujos considerados críticos para validar el funcionamient
 * Generación y entrega del documento RFP.
 * Validaciones funcionales y negativas asociadas a Login y Signup.
 
-El **Questionnaire principal** puede ejecutarse utilizando el token gratuito disponible para una cuenta nueva, permitiendo validar el flujo sin requerir la compra de paquetes comerciales.
+El **Questionnaire principal** puede ejecutarse utilizando el token gratuito disponible para una cuenta nueva, permitiendo validar el flujo sin requerir dependencias adicionales con el sistema de pagos.
 
-Esto permite mantener una cobertura automatizada representativa sin introducir dependencias adicionales con el sistema de pagos.
-
-### Flujos no automatizados
-
-#### Sistema de pagos
-
-El sistema de pagos no forma parte de la cobertura automatizada actual.
-
-La exclusión responde principalmente a las dependencias con servicios externos, específicamente **Stripe**, además del volumen de paquetes y escenarios comerciales disponibles.
-
-La automatización de estos escenarios requeriría controlar transacciones y condiciones asociadas a pagos reales, incluyendo procesos posteriores como devoluciones, para los cuales no existe actualmente acceso y control suficiente dentro del alcance definido.
-
-#### Generación de contenido para todos los paquetes
-
-No se automatiza una prueba integral que ejecute el Questionnaire y la generación de contenido para todas las combinaciones de paquetes disponibles.
-
-La razón principal es el volumen de escenarios y dependencias involucradas. Una prueba integral de todos los paquetes produciría una suite considerablemente más extensa y con una mayor dependencia del sistema de pagos.
-
-En consecuencia, se mantiene la validación del flujo principal mediante el mecanismo gratuito disponible, mientras que la cobertura exhaustiva de paquetes comerciales permanece fuera del alcance actual.
+Esto permite mantener una cobertura automatizada representativa y repetible dentro del framework.
 
 ---
 
@@ -185,7 +165,7 @@ Cypress.Commands.add("login_cached", () => {
   cy.session(
     Cypress.env("USER"),
     () => {
-      cy.login();
+      cy.login(); [Descrito en "commands" para privacidad y legibilidad de código]
     },
     {
       validate() {
@@ -202,6 +182,7 @@ Cypress.Commands.add("login_cached", () => {
 ### Problema 2: Compatibilidad con Firefox
 
 * Firefox presentaba errores intermitentes relacionados con promesas no controladas y validación de sesiones restauradas.
+    * (Problemas de manejo de cy.session) 
 
 ### Solución
 
@@ -229,28 +210,34 @@ Cypress.on("uncaught:exception", (err) => {
 El flujo completo fue automatizado como una única prueba continua para preservar el estado de la sesión, mantener la continuidad del token generado y validar correctamente el recorrido end-to-end.
 
 ---
+### Problema 4: Sincronización de procesos de generación mediante IA
 
-### Problema 4: Contenido generado por IA
-
-* Los procesos impulsados por IA generan contenido dinámicamente y requieren tiempos de procesamiento significativamente mayores a los esperados por defecto en Cypress.
-
-### Solución
-
-Se ajustaron estrategias de espera y validaciones para sincronizar la ejecución con la respuesta real de la aplicación, evitando falsos fallos por timeout prematuro.
-
----
-
-### Problema 5: Generación de documentos de larga duración
-
-* La generación de funcionalidades del producto y la creación del documento RFP pueden tardar aproximadamente 4.7 minutos en completarse.
+* Los procesos de generación de contenido y documentos impulsados por IA son asíncronos y pueden requerir varios minutos para completarse, provocando falsos fallos cuando las validaciones se ejecutan antes de recibir la respuesta correspondiente.
 
 ### Solución
 
-Se implementaron timeouts extendidos y validaciones específicas que permiten esperar la generación completa del documento antes de ejecutar las verificaciones correspondientes.
+Inicialmente se implementó un intercept de las peticiones asociadas al proceso de generación para utilizar la respuesta del API como punto de sincronización de la prueba.
+
+```js
+cy.intercept("POST", "**/api/...").as("generateContent");
+
+cy.get("[data-cy='generate-button']").click();
+
+cy.wait("@generateContent")
+  .its("response")
+  .should("exist")
+  .and("have.property", "statusCode", 200);
+```
+
+Esta estrategia permitió sincronizar las validaciones con la respuesta real del servicio en lugar de depender únicamente de los tiempos de espera predeterminados de Cypress.
+
+Posteriormente, por requerimiento del proyecto, la estrategia fue simplificada para este flujo mediante un `wait` específico de **5 minutos**, considerando que la generación completa de funcionalidades y documentos podía extenderse hasta aproximadamente 4.7 minutos.
+
+La espera extendida permitió establecer una ventana controlada para completar el proceso antes de ejecutar las validaciones finales, reduciendo falsos fallos asociados al tiempo de procesamiento.
 
 ---
 
-### Problema 6: Cold starts del backend
+### Problema 5: Cold starts del backend
 
 * El backend podía encontrarse en estado inactivo tras periodos prolongados sin tráfico, ocasionando condiciones inconsistentes durante la ejecución.
 
@@ -276,7 +263,7 @@ La solicitud utiliza un escenario controlado y su finalidad es preparar el servi
 
 ---
 
-### Problema 7: Selectores inestables
+### Problema 6: Selectores inestables
 
 * Múltiples elementos carecían de selectores estables para automatización, generando pruebas frágiles y dependientes de cambios visuales.
 
@@ -286,13 +273,18 @@ Se incorporaron selectores dedicados orientados a automatización mediante atrib
 
 ---
 
-### Problema 8: Datos dinámicos para registro
+### Problema 7: Datos dinámicos para registro
 
 * Los flujos de registro requerían usuarios únicos en cada ejecución para evitar conflictos por cuentas previamente creadas.
 
 ### Solución
 
 Se implementó generación dinámica de correos electrónicos y credenciales utilizando identificadores únicos basados en timestamp.
+
+```js
+const cypress_email = `cypress_test${Date.now()}@yopmail.com`;
+
+```
 
 ---
 
@@ -313,7 +305,6 @@ Se implementaron comandos específicos para:
 → Ejecución en ambiente Development.
 → Ejecución en ambiente Production.
 → Generación automática de reportes Mochawesome.
-→ Ejecución cross-browser en Firefox y Edge.
 
 ### Resultado
 
@@ -414,23 +405,6 @@ De esta manera, el artefacto generado durante el proceso de build es validado an
 | PR → `main`    | DEV           | DEV     | —          | —      |
 | Merge → `main` | DEV           | DEV     | PROD       | PROD   |
 
-### ¿Cómo funciona?
-
-**PR → `dev`**
-
-Se construye la aplicación en modo DEV y Cypress valida ese build. Al tratarse de un Pull Request, no se realiza deployment.
-
-**Merge → `dev`**
-
-Se construye el artefacto DEV y Cypress valida el mismo build. Una vez superada la validación, el artefacto es utilizado para realizar el deployment al ambiente DEV.
-
-**PR → `main`**
-
-Se construye nuevamente el build DEV y Cypress ejecuta la validación sobre ese artefacto. No se realiza deployment.
-
-**Merge → `main`**
-
-Se construye y valida primero el artefacto DEV. Una vez superada la validación, se ejecuta el stage adicional de `BuildProd`, que genera el artefacto de producción. Finalmente, este artefacto se utiliza para realizar el deployment a PROD.
 
 Esta estrategia permite utilizar las pruebas E2E como una validación previa a la promoción del software hacia los ambientes desplegados.
 
@@ -457,16 +431,15 @@ Los screenshots se publican como artefactos únicamente cuando la ejecución pre
 
 # Matriz de Cobertura
 
-| Área                                                             | Cobertura       |
-| ---------------------------------------------------------------- | --------------- |
-| Autenticación                                                    | Automatizada    |
-| Registro de usuario                                              | Automatizada    |
-| Questionnaire principal                                          | Automatizada    |
-| Product Definition                                               | Automatizada    |
-| Generación / entrega de documento RFP                            | Automatizada    |
-| Validaciones negativas de autenticación                          | Automatizada    |
-| Validaciones negativas de registro                               | Automatizada    |
-
+| Área                                    | Cobertura    |
+| --------------------------------------- | ------------ |
+| Autenticación                           | Automatizada |
+| Registro de usuario                     | Automatizada |
+| Questionnaire principal                 | Automatizada |
+| Product Definition                      | Automatizada |
+| Generación / entrega de documento RFP   | Automatizada |
+| Validaciones negativas de autenticación | Automatizada |
+| Validaciones negativas de registro      | Automatizada |
 
 ---
 
@@ -484,8 +457,6 @@ El alcance actual permite validar:
 * Escenarios negativos de autenticación y registro.
 * Integridad del flujo automatizado antes del deployment.
 
-
-
 ---
 
 # Conclusión
@@ -494,11 +465,9 @@ La versión **SprintLine 1.0.1** establece una reorganización del framework de 
 
 La estrategia mantiene automatizados los flujos críticos de SprintLine, incluyendo autenticación, registro, Questionnaire y Product Definition, además de la generación y entrega del documento RFP.
 
-Los escenarios relacionados con pagos y la ejecución exhaustiva de todos los paquetes comerciales permanecen fuera del alcance automatizado debido a sus dependencias externas, volumen de combinaciones y requerimientos de control sobre transacciones reales.
-
 La integración con Azure DevOps permite ejecutar las pruebas sobre el artefacto generado durante el build, conservar evidencia de ejecución y utilizar la validación E2E como parte del proceso previo al deployment.
 
-**Resultado:** la suite proporciona cobertura automatizada sobre los flujos funcionales de mayor valor para SprintLine, manteniendo explícitamente documentados los escenarios que actualmente permanecen fuera del alcance de automatización.
+**Resultado:** la suite proporciona cobertura automatizada sobre los flujos funcionales de mayor valor para SprintLine, con una estructura más consistente, ejecución reproducible y capacidad de integrarse directamente dentro del flujo CI/CD.
 
 ---
 
@@ -513,8 +482,6 @@ La integración con Azure DevOps permite ejecutar las pruebas sobre el artefacto
 
 ---
 
-<div align="center">
-
-<sub>QA Documentation | Axel Van Dyck | QA Engineer</sub>
-
+<div style="text-align:center; color:#888; font-size:10px;">
+    QA Documentation | Axel Van Dyck | QA Engineer 
 </div>
