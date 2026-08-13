@@ -1,5 +1,5 @@
-> ### Confidentiality Notice
->
+# Confidentiality Notice
+
 > This repository contains an anonymized portfolio case study based on a real-world project.
 >
 > Company names, client information, URLs, credentials, proprietary business logic, and sensitive implementation details have been removed or modified to protect confidentiality.
@@ -8,164 +8,138 @@
 
 ---
 
-# SprintLine – E2E Automation Framework
+# SprintLine — E2E Automation Framework
 
-Framework de automatización E2E para SprintLine | Cypress | JavaScript
+**AI-Powered Technical Documentation Platform | Cypress | JavaScript | Azure DevOps | CI/CD**
 
-### Proyecto
-
-Automatización E2E para plataforma de generación de documentación y especificaciones técnicas asistida por IA.
+E2E automation framework designed to validate critical workflows within an AI-powered platform that transforms product ideas into implementation-ready technical documentation and specifications.
 
 ---
 
-### Objetivo
+## Quick Scope
 
-Implementar suites de automatización E2E orientadas a Build Validation Testing (BVT) para integrarse en pipelines de CI/CD y reducir el esfuerzo de validación manual previo al deployment mediante la validación automática de flujos críticos de negocio.
+| Area                    | Details                            |
+| ----------------------- | ---------------------------------- |
+| **Role**                | QA Engineer                        |
+| **Testing**             | E2E · Regression · Negative        |
+| **Automation**          | Cypress · JavaScript               |
+| **Reporting**           | Mochawesome                        |
+| **CI/CD**               | Azure DevOps Pipelines             |
+| **Environments**        | Local · Development · Production   |
+| **Browsers**            | Chrome · Firefox · Edge · Electron |
+| **Automated Scenarios** | 33                                 |
 
-Diseñé e implementé una suite de automatización E2E con Cypress para SprintLine, una plataforma impulsada por IA que transforma ideas de producto en documentación técnica lista para implementación.
+### Key Results
 
-SprintLine permite a founders, Product Managers y equipos técnicos generar Product Requirements Documents (PRDs), User Stories con criterios de aceptación, especificaciones OpenAPI y alcances MVP mediante flujos guiados asistidos por IA.
-
-La solución fue integrada al proceso de Build Validation Testing (BVT) para validar funcionalidades críticas antes del deployment y reducir significativamente el esfuerzo de validación manual.
-
-La estrategia actual prioriza los flujos funcionales de mayor valor y mantiene una cobertura estable y repetible dentro del framework.
-
----
-
-## Stack
-
-```txt
-- Cypress
-- JavaScript
-- Mochawesome Reporter
-- Azure DevOps
-- Azure Static Web Apps
-- GitHub
-```
-
-## Mi participación
-
-```txt
-→ Diseño de pruebas E2E para flujos críticos de negocio.
-→ Desarrollo de specs y scripts utilizando Cypress y JavaScript.
-→ Adaptación y estandarización de scripts de ejecución para distintos entornos.
-→ Implementación de comandos reutilizables para simplificar la ejecución y mantenimiento de pruebas.
-→ Gestión de datos dinámicos para procesos de registro.
-→ Incorporación de selectores en front end orientados a automatización.
-→ Mantenimiento y optimización de suites.
-→ Debugging y análisis de fallos cross-browser.
-→ Implementación de preparación del entorno mediante wake-up/ping del API.
-→ Integración del framework dentro del proceso de Build Validation Testing.
-→ Generación automática de reportes HTML y JSON.
-```
-
-## Logros y Resultados
-
-➜ **33 escenarios automatizados.**
-
-➜ **Reducción del tiempo de validación de aproximadamente 50 minutos a un promedio de 9 minutos (~82%).**
-
-➜ **10 desafíos técnicos solucionados** relacionados con estabilidad, ejecución, sesiones, contenido dinámico y CI/CD.
-
-➜ Cobertura automatizada de los principales flujos funcionales de SprintLine:
-
-* Login.
-* Signup.
-* Questionnaire.
-* Product Definition.
-* Generación y entrega del documento RFP.
-* Validaciones negativas de autenticación y registro.
-
-➜ Compatibilidad con **Chrome, Firefox, Edge y Electron**.
-
-➜ Generación automática de reportes HTML y JSON como artifacts del pipeline.
-
-➜ Implementación de reutilización de sesiones mediante `cy.session()` para optimizar tiempos de ejecución.
-
-➜ Implementación de preparación automática del backend para mitigar problemas asociados con **cold starts**.
+* **~82% reduction** in validation time: ~50 min → ~9 min.
+* **33 automated scenarios** covering critical SprintLine workflows.
+* Cross-browser execution across **Chrome, Firefox, Edge, and Electron**.
+* Automated HTML and JSON reporting as pipeline artifacts.
+* **10 technical challenges** addressed involving sessions, AI-generated content, dynamic data, browser compatibility, backend availability, and CI/CD.
+* Implemented `cy.session()` to reduce authentication overhead.
+* Implemented API wake-up logic to mitigate backend cold starts.
+* Integrated E2E validation into Azure DevOps Build Validation Testing.
 
 ---
 
-# Alcance de la Solución
+## Case Study Index
 
-La estrategia de automatización prioriza los flujos críticos y representativos del funcionamiento principal de SprintLine.
-
-| Flujo funcional        | Automatización | Alcance                                              |
-| ---------------------- | -------------- | ---------------------------------------------------- |
-| **Login**              | Automatizado   | Flujo funcional y validaciones negativas             |
-| **Signup**             | Automatizado   | Flujo funcional y validaciones negativas             |
-| **Questionnaire**      | Automatizado   | Flujo principal                                      |
-| **Product Definition** | Automatizado   | Validación de generación y entrega del documento RFP |
-
-### Flujos automatizados
-
-Se automatizaron los flujos considerados críticos para validar el funcionamiento principal de SprintLine:
-
-* Login.
-* Signup.
-* Questionnaire.
-* Product Definition.
-* Generación y entrega del documento RFP.
-* Validaciones funcionales y negativas asociadas a Login y Signup.
-
-El **Questionnaire principal** puede ejecutarse utilizando el token gratuito disponible para una cuenta nueva, permitiendo validar el flujo sin requerir dependencias adicionales con el sistema de pagos.
-
-Esto permite mantener una cobertura automatizada representativa y repetible dentro del framework.
+* [Project Overview](#project-overview)
+* [QA Strategy](#qa-strategy)
+* [Automation Scope & Decisions](#automation-scope--decisions)
+* [Technical Implementation](#technical-implementation)
+* [Test Architecture](#test-architecture)
+* [Execution & Environment Strategy](#execution--environment-strategy)
+* [CI/CD & Reporting](#cicd--reporting)
+* [Results](#results)
+* [Limitations & Known Issues](#limitations--known-issues)
 
 ---
 
-# Test Organization
+# Project Overview
 
-Como parte de la versión **1.0.1**, se consolidó la estructura de las pruebas bajo una organización más sencilla y consistente.
+## Context
 
-La estructura anterior estaba dividida en suites independientes de `Smoke`, `Regression` y `Negative`. Después del refactor, las validaciones se organizaron alrededor de los flujos funcionales principales.
+SprintLine is an AI-powered platform that transforms product ideas into technical documentation and implementation-ready specifications.
 
-### Estructura actual
+The platform supports workflows for generating Product Requirements Documents (PRDs), User Stories with acceptance criteria, OpenAPI specifications, and MVP definitions through guided AI-assisted processes.
 
-```text
-automated-tests/
-└── cypress/
-    └── e2e/
-        └── Regression-Tests/
-            ├── 1.login.cy.js
-            ├── 2.login.negative
-            ├── 3.signup
-            ├── 4.signup.negative
-            └── 5.prod.definition
-```
+## Objective
 
-Las validaciones negativas permanecen asociadas a sus respectivos flujos funcionales en lugar de mantener una separación estructural independiente.
+Design and implement an E2E automation framework focused on critical business workflows and integrate it into Build Validation Testing (BVT) to reduce manual validation effort before deployment.
 
-### Beneficios del refactor
+The strategy prioritized high-value workflows that could be executed consistently and provide representative coverage of the application's core functionality.
 
-* Menor duplicación estructural.
-* Localización más sencilla de los escenarios.
-* Organización basada en flujos funcionales.
-* Mayor consistencia para incorporar nuevas pruebas.
-* Mantenimiento simplificado del framework.
+## My Role
 
-> **Nota:** la versión 1.0.1 corresponde a un refactor de organización y mantenibilidad. No representa una modificación de la funcionalidad validada por las pruebas.
+* Designed E2E test coverage for critical business workflows.
+* Developed and maintained Cypress/JavaScript specifications.
+* Standardized execution scripts across environments.
+* Implemented reusable Cypress custom commands.
+* Implemented dynamic test data generation.
+* Added automation-oriented frontend selectors.
+* Investigated and resolved cross-browser failures.
+* Implemented session reuse through `cy.session()`.
+* Implemented backend wake-up logic to mitigate cold starts.
+* Integrated the framework into Azure DevOps BVT.
+* Configured automated HTML and JSON reporting.
+* Maintained and optimized the test suites.
+
+## Technology Stack
+
+* Cypress
+* JavaScript
+* Azure DevOps
+* YAML Pipelines
+* Mochawesome Reporter
+* Azure Static Web Apps
+* GitHub
 
 ---
 
-# Desafíos Técnicos y Soluciones Implementadas
+# QA Strategy
 
-### Problema 1: Reutilización de sesiones
+The automation strategy prioritizes workflows that are:
 
-* La ejecución repetitiva de autenticaciones incrementaba innecesariamente el tiempo total de ejecución.
+* Business-critical.
+* Representative of the core product experience.
+* Repetitive and suitable for automation.
+* Stable enough for repeatable execution.
+* Valuable for pre-deployment validation.
 
-### Solución
+The framework combines functional and negative scenarios while also validating longer end-to-end workflows involving persistent sessions, dynamic URLs, AI-generated content, and document generation.
 
-Se implementó correctamente `cy.session()` para almacenar y reutilizar sesiones autenticadas entre pruebas, reduciendo tiempos de ejecución y carga sobre el servicio de autenticación.
+---
 
-Example Use Case:
+# Automation Scope & Decisions
 
-```js
+| Flow                            | Decision   | Coverage                                             |
+| ------------------------------- | ---------- | ---------------------------------------------------- |
+| Login                           | ✅ Automate | Functional + Negative                                |
+| Signup                          | ✅ Automate | Functional + Negative                                |
+| Questionnaire                   | ✅ Automate | Main E2E workflow                                    |
+| Product Definition              | ✅ Automate | Core workflow                                        |
+| RFP Generation & Delivery       | ✅ Automate | Document generation and delivery                     |
+| Payment-dependent Questionnaire | ⚠️ Limited | Free-token flow used to maintain repeatable coverage |
+
+The selected flows provide representative coverage of SprintLine's highest-value functional workflows while avoiding unnecessary dependencies that could reduce execution reliability.
+
+---
+
+# Technical Implementation
+
+## Session Reuse
+
+Repeated authentication increased the total execution time and added unnecessary load to the authentication service.
+
+**Implementation:** Implemented `cy.session()` to cache and validate authenticated sessions between tests.
+
+```javascript
 Cypress.Commands.add("login_cached", () => {
   cy.session(
     Cypress.env("USER"),
     () => {
-      cy.login(); [Descrito en "commands" para privacidad y legibilidad de código]
+      cy.login(); // Described in commands for privacy and readability
     },
     {
       validate() {
@@ -177,20 +151,17 @@ Cypress.Commands.add("login_cached", () => {
 });
 ```
 
+**Result:** Reduced repeated authentication overhead and improved overall execution time.
+
 ---
 
-### Problema 2: Compatibilidad con Firefox
+## Firefox Compatibility
 
-* Firefox presentaba errores intermitentes relacionados con promesas no controladas y validación de sesiones restauradas.
-    * (Problemas de manejo de cy.session) 
+Firefox presented intermittent issues involving uncaught promises and restored session validation.
 
-### Solución
+**Implementation:** Added targeted exception handling for known browser-specific behavior and additional session validation during restoration.
 
-Se incorporó un manejador global de excepciones para errores conocidos y se agregaron validaciones adicionales durante la restauración de sesiones para garantizar compatibilidad cross-browser específicamente con Firefox.
-
-Example Use Case:
-
-```js
+```javascript
 Cypress.on("uncaught:exception", (err) => {
   // Ignore known flaky UI response issue in Firefox
   if (err.message.includes("Network connection")) {
@@ -199,26 +170,27 @@ Cypress.on("uncaught:exception", (err) => {
 });
 ```
 
----
-
-### Problema 3: URLs dinámicas y sesiones persistentes
-
-* El flujo principal del cuestionario genera URLs dinámicas y depende de una sesión persistente que no puede reconstruirse parcialmente.
-
-### Solución
-
-El flujo completo fue automatizado como una única prueba continua para preservar el estado de la sesión, mantener la continuidad del token generado y validar correctamente el recorrido end-to-end.
+**Result:** Improved cross-browser stability while maintaining execution across Chrome, Firefox, Edge, and Electron.
 
 ---
-### Problema 4: Sincronización de procesos de generación mediante IA
 
-* Los procesos de generación de contenido y documentos impulsados por IA son asíncronos y pueden requerir varios minutos para completarse, provocando falsos fallos cuando las validaciones se ejecutan antes de recibir la respuesta correspondiente.
+## Dynamic URLs & Persistent Sessions
 
-### Solución
+The main questionnaire workflow generates dynamic URLs and depends on persistent session state that cannot be partially reconstructed.
 
-Inicialmente se implementó un intercept de las peticiones asociadas al proceso de generación para utilizar la respuesta del API como punto de sincronización de la prueba.
+**Implementation:** Automated the complete questionnaire as a continuous E2E scenario, preserving session state and validating the workflow sequentially.
 
-```js
+**Result:** Maintained end-to-end context and prevented failures caused by splitting dependent steps across independent tests.
+
+---
+
+## AI Content Generation
+
+AI-driven content and document generation can take several minutes to complete, causing premature Cypress failures when relying on default synchronization.
+
+**Implementation:** Initially synchronized the test with the corresponding API response using `cy.intercept()`.
+
+```javascript
 cy.intercept("POST", "**/api/...").as("generateContent");
 
 cy.get("[data-cy='generate-button']").click();
@@ -229,256 +201,231 @@ cy.wait("@generateContent")
   .and("have.property", "statusCode", 200);
 ```
 
-Esta estrategia permitió sincronizar las validaciones con la respuesta real del servicio en lugar de depender únicamente de los tiempos de espera predeterminados de Cypress.
+For the final implementation, the project required a controlled **5-minute timeout** because complete feature and document generation could take approximately 4.7 minutes.
 
-Posteriormente, por requerimiento del proyecto, la estrategia fue simplificada para este flujo mediante un `wait` específico de **5 minutos**, considerando que la generación completa de funcionalidades y documentos podía extenderse hasta aproximadamente 4.7 minutos.
-
-La espera extendida permitió establecer una ventana controlada para completar el proceso antes de ejecutar las validaciones finales, reduciendo falsos fallos asociados al tiempo de procesamiento.
+**Result:** Reduced false failures caused by AI processing time and provided a controlled execution window for long-running workflows.
 
 ---
 
-### Problema 5: Cold starts del backend
+## Backend Cold Starts
 
-* El backend podía encontrarse en estado inactivo tras periodos prolongados sin tráfico, ocasionando condiciones inconsistentes durante la ejecución.
+The backend could become inactive after prolonged periods without traffic, creating inconsistent initial conditions during test execution.
 
-### Solución
-
-Se implementó un comando reutilizable que realiza una solicitud inicial al API antes de ejecutar las suites para activar los servicios y reducir problemas asociados con cold starts.
-
-La operación se ejecuta mediante un `before` global en `support/e2e.js`, evitando la necesidad de incorporar esta preparación dentro de cada prueba individual.
-
-El flujo de preparación es:
+**Implementation:** Added a reusable API wake-up command executed globally before the suite.
 
 ```text
-Inicio de suite
-      ↓
-Wake-up / Ping API
-      ↓
-API disponible
-      ↓
-Ejecución de pruebas
+Suite Start
+    ↓
+API Wake-up / Ping
+    ↓
+Backend Available
+    ↓
+Test Execution
 ```
 
-La solicitud utiliza un escenario controlado y su finalidad es preparar el servicio para la ejecución de las pruebas, no validar una funcionalidad independiente.
+The request is used solely to initialize the service and is not treated as an independent functional validation.
+
+**Result:** Reduced false failures caused by backend cold starts.
 
 ---
 
-### Problema 6: Selectores inestables
+## Automation-Oriented Selectors
 
-* Múltiples elementos carecían de selectores estables para automatización, generando pruebas frágiles y dependientes de cambios visuales.
+Several UI elements lacked stable selectors, making tests dependent on visual or structural changes.
 
-### Solución
+**Implementation:** Added dedicated `data-cy` selectors to improve automation reliability.
 
-Se incorporaron selectores dedicados orientados a automatización mediante atributos `data-cy`, mejorando la estabilidad y mantenibilidad de las pruebas.
+**Result:** Improved test stability and reduced maintenance caused by UI changes.
 
 ---
 
-### Problema 7: Datos dinámicos para registro
+## Dynamic Registration Data
 
-* Los flujos de registro requerían usuarios únicos en cada ejecución para evitar conflictos por cuentas previamente creadas.
+Registration scenarios required unique users on every execution to prevent conflicts with previously created accounts.
 
-### Solución
+**Implementation:** Generated unique email addresses dynamically using execution timestamps.
 
-Se implementó generación dinámica de correos electrónicos y credenciales utilizando identificadores únicos basados en timestamp.
-
-```js
+```javascript
 const cypress_email = `cypress_test${Date.now()}@yopmail.com`;
-
 ```
 
----
-
-# Desafío Técnico: Estandarización de la ejecución de pruebas
-
-### Problema
-
-La ejecución de pruebas requería diferentes configuraciones dependiendo del entorno, navegador y objetivo de ejecución, lo que incrementaba la complejidad operativa y la posibilidad de errores manuales.
-
-### Solución
-
-Se adaptaron scripts reutilizables para centralizar la configuración de variables de entorno y simplificar la ejecución de pruebas desde distintos contextos.
-
-Se implementaron comandos específicos para:
-
-→ Ejecución desde línea de comandos.
-→ Ejecución mediante Cypress Test Runner.
-→ Ejecución en ambiente Development.
-→ Ejecución en ambiente Production.
-→ Generación automática de reportes Mochawesome.
-
-### Resultado
-
-→ Menor esfuerzo de configuración manual.
-→ Ejecución consistente entre entornos.
-→ Mayor facilidad para nuevos miembros del equipo.
-→ Reducción de errores operativos durante validaciones y debugging.
+**Result:** Enabled repeatable registration testing without duplicate-account conflicts.
 
 ---
 
-# Desafío Técnico: Reutilización de acciones mediante Custom Commands
+## Reusable Custom Commands
 
-### Problema
+Authentication and environment preparation operations were repeated across multiple scenarios.
 
-Las operaciones de autenticación y preparación de entornos se repetían constantemente entre múltiples escenarios, generando duplicación de código y aumentando el costo de mantenimiento.
+**Implementation:** Encapsulated recurring behavior into reusable commands, including:
 
-### Solución
+* `login`
+* `login_cached`
+* API wake-up / ping
 
-Se implementaron comandos personalizados reutilizables para encapsular comportamientos frecuentes:
-
-→ `login` para autenticación validada.
-→ `ping` para mitigación de cold starts.
-→ `login_cached` utilizando `cy.session()` para reutilización de sesiones autenticadas.
-
-### Resultado
-
-→ Código más limpio y fácil de leer.
-→ Menor duplicación de lógica.
-→ Mayor mantenibilidad del framework.
-→ Reducción de tiempos de ejecución mediante reutilización de sesiones.
+**Result:** Reduced duplicated logic and improved framework maintainability.
 
 ---
 
-# Estrategia de Ejecución
+# Test Architecture
 
-SprintLine cuenta con comandos diferenciados para ejecutar las pruebas contra distintos ambientes.
-
-| Script        | Descripción                                          |
-| ------------- | ---------------------------------------------------- |
-| `test:local`  | Ejecuta las suites contra una aplicación local       |
-| `test:dev`    | Ejecuta las suites contra el ambiente de desarrollo  |
-| `test:prod`   | Ejecuta las suites contra el ambiente de producción  |
-| `debug:local` | Abre Cypress para debugging contra el ambiente local |
-
-Las URLs, usuarios y demás valores específicos de configuración se administran mediante variables de entorno y no forman parte de la documentación de trazabilidad.
-
----
-
-# Pipeline
-
-Las pruebas Cypress están integradas con Azure DevOps como un **stage de validación posterior al build** dentro del proceso de Build Validation Testing.
-
-El flujo general es:
+As part of version **1.0.1**, the framework was reorganized around functional workflows rather than maintaining separate structural suites for Smoke, Regression, and Negative testing.
 
 ```text
-Build Application
-       ↓
-Publish Build Artifact
-       ↓
-Run Cypress Tests
-       ↓
-Publish Test Reports
-       ↓
-Publish Screenshots on Failure
-       ↓
-Continue Pipeline / Quality Gate
-       ↓
-Deploy
+automated-tests
+└── cypress
+    └── e2e
+        └── Regression-Tests
+            ├── 1.login.cy.js
+            ├── 2.login.negative.cy.js
+            ├── 3.signup.cy.js
+            ├── 4.signup.negative.cy.js
+            └── 5.prod.definition.cy.js
 ```
 
-El stage de pruebas utiliza el artefacto generado durante el build y levanta la aplicación de manera local dentro del agente del pipeline.
+Negative scenarios remain associated with their corresponding functional workflows rather than being maintained in a separate directory.
 
-El proceso contempla:
+### Refactor Benefits
 
-1. Instalación de Node.js.
-2. Descarga del artefacto generado por el build.
-3. Inicio de la aplicación mediante `serve`.
-4. Espera de disponibilidad mediante `wait-on`.
-5. Instalación de las dependencias de automatización.
-6. Ejecución de Cypress.
-7. Generación de reportes Mochawesome.
-8. Publicación de reportes como artefactos.
-9. Publicación de screenshots cuando existen fallos.
-10. Publicación de resultados de pruebas.
+* Reduced structural duplication.
+* Easier scenario discovery.
+* Organization based on functional workflows.
+* Simplified maintenance.
+* Consistent structure for future test expansion.
+
+> Version 1.0.1 represents a framework organization and maintainability refactor rather than a change to the functionality being validated.
 
 ---
 
-# Estrategia de Validación Antes del Deployment
+# Execution & Environment Strategy
 
-La estrategia actual ejecuta Cypress contra el **build de desarrollo servido localmente dentro del pipeline** antes de realizar cualquier deployment.
+The framework provides dedicated scripts for execution against different environments.
 
-De esta manera, el artefacto generado durante el proceso de build es validado antes de ser promovido al ambiente correspondiente.
+| Script        | Purpose                                  |
+| ------------- | ---------------------------------------- |
+| `test:local`  | Execute suites against localhost         |
+| `test:dev`    | Execute suites against Development       |
+| `test:prod`   | Execute suites against Production        |
+| `debug:local` | Open Cypress interactively for debugging |
 
-| Situación      | Build inicial | Cypress | Build PROD | Deploy |
-| -------------- | ------------- | ------- | ---------- | ------ |
-| PR → `dev`     | DEV           | DEV     | —          | —      |
-| Merge → `dev`  | DEV           | DEV     | —          | DEV    |
-| PR → `main`    | DEV           | DEV     | —          | —      |
-| Merge → `main` | DEV           | DEV     | PROD       | PROD   |
-
-
-Esta estrategia permite utilizar las pruebas E2E como una validación previa a la promoción del software hacia los ambientes desplegados.
+Environment-specific URLs, users, credentials, and configuration values are managed through environment variables and are not stored in the repository.
 
 ---
 
-# Reporting y Evidencia
+# CI/CD & Reporting
 
-La ejecución automatizada utiliza **Mochawesome** como reporter.
+## Pipeline Strategy
 
-El pipeline genera y publica los resultados de ejecución como artefactos, permitiendo conservar evidencia de las pruebas ejecutadas.
+The Cypress framework is integrated into Azure DevOps as part of the Build Validation Testing process.
 
-La estrategia contempla:
+The target branch determines which application build is generated and validated.
 
-* Reportes HTML.
-* Reportes JSON.
-* Timestamp de ejecución.
-* Directorio centralizado de reportes.
-* Screenshots de ejecuciones con errores.
-* Resultados de pruebas publicados dentro del pipeline.
+### Development Flow
 
-Los screenshots se publican como artefactos únicamente cuando la ejecución presenta fallos, facilitando el análisis posterior de errores.
+```text
+Merge → dev
+   ↓
+Build DEV
+   ↓
+Deploy to Test Environment
+   ↓
+Execute Cypress Tests
+   ↓
+Tests Passed?
+   ├── No  → Pipeline Stops
+   └── Yes → Deploy to DEV
+```
 
----
+### Production Flow
 
-# Matriz de Cobertura
+```text
+Merge → main
+   ↓
+Build PROD
+   ↓
+Deploy to Test Environment
+   ↓
+Execute Cypress Tests
+   ↓
+Tests Passed?
+   ├── No  → Pipeline Stops
+   └── Yes → Deploy to PROD
+```
 
-| Área                                    | Cobertura    |
-| --------------------------------------- | ------------ |
-| Autenticación                           | Automatizada |
-| Registro de usuario                     | Automatizada |
-| Questionnaire principal                 | Automatizada |
-| Product Definition                      | Automatizada |
-| Generación / entrega de documento RFP   | Automatizada |
-| Validaciones negativas de autenticación | Automatizada |
-| Validaciones negativas de registro      | Automatizada |
+This approach ensures that the build intended for the target environment is validated before the final deployment.
 
----
+A failed Cypress execution prevents the corresponding deployment from continuing.
 
-# Alcance Actual
+## Automated Reporting
 
-La automatización de SprintLine está orientada a proporcionar una **cobertura funcional representativa de los flujos críticos**, priorizando escenarios que puedan ejecutarse de manera estable y repetible dentro del framework.
+Mochawesome is used to generate execution reports.
 
-El alcance actual permite validar:
+The pipeline publishes:
 
-* Acceso de usuarios.
-* Registro de usuarios.
-* Ejecución del Questionnaire principal.
-* Flujo de Product Definition.
-* Generación y entrega del documento RFP.
-* Escenarios negativos de autenticación y registro.
-* Integridad del flujo automatizado antes del deployment.
+* HTML reports.
+* JSON reports.
+* Failure screenshots.
+* Test execution artifacts.
 
----
-
-# Conclusión
-
-La versión **SprintLine 1.0.1** establece una reorganización del framework de automatización orientada a mejorar su mantenibilidad, claridad y consistencia estructural, manteniendo la intención funcional de las pruebas existentes.
-
-La estrategia mantiene automatizados los flujos críticos de SprintLine, incluyendo autenticación, registro, Questionnaire y Product Definition, además de la generación y entrega del documento RFP.
-
-La integración con Azure DevOps permite ejecutar las pruebas sobre el artefacto generado durante el build, conservar evidencia de ejecución y utilizar la validación E2E como parte del proceso previo al deployment.
-
-**Resultado:** la suite proporciona cobertura automatizada sobre los flujos funcionales de mayor valor para SprintLine, con una estructura más consistente, ejecución reproducible y capacidad de integrarse directamente dentro del flujo CI/CD.
+This provides persistent execution evidence for post-run analysis and debugging.
 
 ---
 
-## Ejemplos de Integración
+# Results
 
-| Modelo                         | Flujo                                              |
-| ------------------------------ | -------------------------------------------------- |
-| Build Validation Testing (BVT) | Build → Test → Deploy                              |
-| Post-Deployment Testing        | Build → Deploy → Test                              |
-| Multi-Environment Validation   | Build Dev → Deploy Dev → Test → Deploy Prod → Test |
-| Extended Validation Pipeline   | Build → Test → Deploy → Test Prod → Final Report   |
+| Metric                         |   Result |
+| ------------------------------ | -------: |
+| Automated scenarios            |   **33** |
+| Manual validation time         |  ~50 min |
+| Automated execution            |   ~9 min |
+| Time reduction                 | **~82%** |
+| Supported browsers             |    **4** |
+| Technical challenges addressed |   **10** |
+
+### Functional Coverage
+
+* Login.
+* Signup.
+* Negative authentication scenarios.
+* Negative registration scenarios.
+* Questionnaire.
+* Product Definition.
+* RFP generation and delivery.
+* AI-generated content validation.
+
+### Additional Improvements
+
+* Reduced authentication overhead through session reuse.
+* Improved cross-browser compatibility.
+* Reduced false failures caused by backend cold starts.
+* Improved synchronization of AI-driven workflows.
+* Added stable automation selectors.
+* Enabled repeatable dynamic registration.
+* Integrated automated reporting into CI/CD.
+* Simplified framework organization through the 1.0.1 refactor.
+
+---
+
+# Limitations & Known Issues
+
+* AI-generated workflows can require several minutes to complete.
+* Backend availability may require an initial wake-up request after extended inactivity.
+* Some scenarios depend on baseline environment configuration.
+* AI-generated content can vary between executions while remaining functionally valid.
+* The questionnaire workflow depends on persistent session state and therefore remains intentionally continuous.
+* The current automation scope prioritizes high-value workflows rather than complete application coverage.
+
+---
+
+# Conclusion
+
+SprintLine's E2E automation framework provides representative automated coverage of the platform's highest-value workflows, including authentication, registration, questionnaire processing, product definition, and AI-driven document generation.
+
+The framework reduced validation time by approximately **82%**, while expanding execution across four browsers and integrating automated validation directly into the CI/CD process.
+
+The implementation also addressed several challenges specific to modern AI-powered applications, including long-running asynchronous operations, dynamic content, persistent sessions, backend cold starts, and cross-browser behavior.
+
+The **1.0.1 refactor** further simplified the framework structure, improving maintainability and making future test expansion more consistent.
 
 ---
 
